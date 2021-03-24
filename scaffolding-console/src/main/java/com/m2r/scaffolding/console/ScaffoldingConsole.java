@@ -11,6 +11,7 @@ import com.m2r.scaffolding.console.dto.ScaffoldingTemplate;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -89,36 +90,37 @@ public class ScaffoldingConsole {
             // create base model
             File dirBaseModel = new File(dir, BASE_MODEL_DIR);
             if (!dirBaseModel.exists()) dirBaseModel.mkdirs();
-            URL baseModelUrl = this.getClass().getResource("/" + BASE_MODEL);
+
+            InputStream baseModelIn = this.getClass().getResourceAsStream("/" + BASE_MODEL);
             File baseModelFile = new File(dirBaseModel, BASE_MODEL);
-            Files.copy(new File(baseModelUrl.toURI()).toPath(), baseModelFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(baseModelIn, baseModelFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.console.writeln(String.format(FILE_CREATED, baseModelFile.toString()));
 
             // create base enum
             File dirBaseEnum = new File(dir, BASE_ENUMS_DIR);
             if (!dirBaseEnum.exists()) dirBaseEnum.mkdirs();
-            URL baseEnumUrl = this.getClass().getResource("/" + BASE_ENUM);
+            InputStream baseEnumIn = this.getClass().getResourceAsStream("/" + BASE_ENUM);
             File baseEnumFile = new File(dirBaseEnum, BASE_ENUM);
-            Files.copy(new File(baseEnumUrl.toURI()).toPath(), baseEnumFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(baseEnumIn, baseEnumFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.console.writeln(String.format(FILE_CREATED, baseEnumFile.toString()));
             
             // create domains.gc
             File dirDomain = new File(dir, SCRIPTS_DIR);
             if (!dirDomain.exists()) dirDomain.mkdirs();
-            URL scriptUrl = this.getClass().getResource("/" + SCRIPT_GC);
+            InputStream scriptIn = this.getClass().getResourceAsStream("/" + SCRIPT_GC);
             File scriptFile = new File(dirDomain, SCRIPT_GC);
-            Files.copy(new File(scriptUrl.toURI()).toPath(), scriptFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(scriptIn, scriptFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.console.writeln(String.format(FILE_CREATED, scriptFile.toString()));
 
             // create tamplates
             File dirTemplates = new File(dir, TEMPLATES_DIR);
             if (!dirTemplates.exists()) dirTemplates.mkdirs();
-            URL templateClassUrl = this.getClass().getResource("/" + TEMPLATE_CLASS_VM);
-            URL templateEnumUrl = this.getClass().getResource("/" + TEMPLATE_ENUM_VM);
+            InputStream templateClassIn = this.getClass().getResourceAsStream("/" + TEMPLATE_CLASS_VM);
+            InputStream templateEnumIn = this.getClass().getResourceAsStream("/" + TEMPLATE_ENUM_VM);
             File templateClassFile = new File(dirTemplates, TEMPLATE_CLASS_VM);
             File templateEnumFile = new File(dirTemplates, TEMPLATE_ENUM_VM);
-            Files.copy(new File(templateClassUrl.toURI()).toPath(), templateClassFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(new File(templateEnumUrl.toURI()).toPath(), templateEnumFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(templateClassIn, templateClassFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(templateEnumIn, templateEnumFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             this.console.writeln(String.format(FILE_CREATED, templateClassFile.toString()));
             this.console.writeln(String.format(FILE_CREATED, templateEnumFile.toString()));
 

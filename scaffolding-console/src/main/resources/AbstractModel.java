@@ -1,4 +1,4 @@
-package ${context.basePackage}.domain;
+package ${context.basePackage}.model;
 
 public abstract class AbstractModel {
 

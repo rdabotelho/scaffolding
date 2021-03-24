@@ -37,7 +37,7 @@ public class Const {
             .build();
 
     public static Prompt OVERRIDE_FILE = Prompt.builder()
-            .title("Override %s?")
+            .title("Override %s [no]?")
             .option("yes")
             .option("no")
             .defaultValue("no")
