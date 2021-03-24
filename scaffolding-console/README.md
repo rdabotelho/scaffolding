@@ -1,3 +1,3 @@
 # Scaffolding Console
 
-Console to execute scaffolding commands via terminal.
+Console to execute scaffolding commands by terminal.
