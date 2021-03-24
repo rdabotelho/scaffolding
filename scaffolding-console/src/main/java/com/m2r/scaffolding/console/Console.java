@@ -13,7 +13,13 @@ public class Console {
 	private static final String CHOSEN = "Chosen %s\n\n";
 	private static final String VALUE_REQUIRED = "Value required\n\n";
 
-	public static Optional<String> read(Prompt prompt) {
+	private ConsoleAppender consoleAppender;
+
+	public Console(ConsoleAppender consoleAppender) {
+		this.consoleAppender = consoleAppender;
+	}
+
+	public Optional<String> read(Prompt prompt) {
 		String result = null;
 		while (true) {
 			if (prompt.getOptions().isEmpty()) {
@@ -64,15 +70,15 @@ public class Console {
 		}
 	}
 
-	public static void writeln(String text) {
+	public void writeln(String text) {
 		write(text+"\n");
 	}
 
-	public static void write(String text) {
+	public void write(String text) {
 		System.out.print(text);
 	}
 
-	private static String read(String title, List<String> options) {
+	private String read(String title, List<String> options) {
 		write(String.format("%s\n", title));
 		for (int i=0; i< options.size(); i++) {
 			write(String.format("%d: %s\n", (i+1), options.get(i)));
@@ -80,14 +86,14 @@ public class Console {
 		return read(ENTER_YOUR_CHOICE);
 	}
 
-	private static String read(String title) {
+	private String read(String title) {
 		if (title != null) {
 			write(String.format("%s ", title));
 		}
 		return read();
 	}
 
-    private static String read() {
+    private String read() {
 		try {
 	    		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	    		return br.readLine();
@@ -96,5 +102,12 @@ public class Console {
 			return null;
 		}
     }
+
+	public static class ConsoleAppenderDefault implements ConsoleAppender {
+		@Override
+		public void write(String text) {
+			System.out.print(text);
+		}
+	}
 
 }

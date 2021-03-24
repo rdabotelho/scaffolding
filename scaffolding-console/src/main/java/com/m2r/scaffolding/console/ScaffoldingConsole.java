@@ -41,28 +41,37 @@ public class ScaffoldingConsole {
     private String baseDir;
     private ScaffoldingProject project;
     private boolean genInitialStructure;
+    private Console console;
 
-    public void execute(String baseDir) throws Exception {
+    public ScaffoldingConsole(String baseDir) {
+        this(baseDir, null);
+    }
+
+    public ScaffoldingConsole(String baseDir, ConsoleAppender consoleAppender) {
+        this.console = new Console(consoleAppender != null ? consoleAppender : new Console.ConsoleAppenderDefault());
         this.baseDir = baseDir;
+    }
+
+    public void execute() throws Exception {
         if (isReady()) {
             run();
         }
-        Console.write("bye!\n");
+        this.console.write("bye!\n");
     }
 
     private boolean isReady() throws Exception {
         File dir = new File(baseDir, CODEGEN_DIR);
         File file = new File(dir, CODEGEN_YML);
         if (!file.exists()) {
-            if (Console.read(Const.SETUP).map(it -> it.equals("2")).get()) {
+            if (this.console.read(Const.SETUP).map(it -> it.equals("2")).get()) {
                 return false;
             }
 
             // create gencode.yml
             if (!dir.exists()) dir.mkdirs();
             FileWriter writer = new FileWriter(file);
-            writer.write(String.format("projectName: %s\n", Console.read(Const.PROJECT_NAME).get()));
-            writer.write(String.format("basePackage: %s\n", Console.read(Const.BASE_PACKAGE).get()));
+            writer.write(String.format("projectName: %s\n", this.console.read(Const.PROJECT_NAME).get()));
+            writer.write(String.format("basePackage: %s\n", this.console.read(Const.BASE_PACKAGE).get()));
             writer.write(String.format("configDir: %s\n", CODEGEN_CONFIG_DIR));
             writer.write(String.format("outputDir: %s\n", GENCODE_OUTPUT_DIR));
             writer.write("templates:\n");
@@ -75,7 +84,7 @@ public class ScaffoldingConsole {
             writer.write("  fileName: template-enum.vm\n");
             writer.write("  outputFileName: example/enums/${domain.name}.java\n");
             writer.close();
-            Console.writeln(String.format(FILE_CREATED, file.toString()));
+            this.console.writeln(String.format(FILE_CREATED, file.toString()));
 
             // create base model
             File dirBaseModel = new File(dir, BASE_MODEL_DIR);
@@ -83,7 +92,7 @@ public class ScaffoldingConsole {
             URL baseModelUrl = this.getClass().getResource("/" + BASE_MODEL);
             File baseModelFile = new File(dirBaseModel, BASE_MODEL);
             Files.copy(new File(baseModelUrl.toURI()).toPath(), baseModelFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            Console.writeln(String.format(FILE_CREATED, baseModelFile.toString()));
+            this.console.writeln(String.format(FILE_CREATED, baseModelFile.toString()));
 
             // create base enum
             File dirBaseEnum = new File(dir, BASE_ENUMS_DIR);
@@ -91,7 +100,7 @@ public class ScaffoldingConsole {
             URL baseEnumUrl = this.getClass().getResource("/" + BASE_ENUM);
             File baseEnumFile = new File(dirBaseEnum, BASE_ENUM);
             Files.copy(new File(baseEnumUrl.toURI()).toPath(), baseEnumFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            Console.writeln(String.format(FILE_CREATED, baseEnumFile.toString()));
+            this.console.writeln(String.format(FILE_CREATED, baseEnumFile.toString()));
             
             // create domains.gc
             File dirDomain = new File(dir, SCRIPTS_DIR);
@@ -99,7 +108,7 @@ public class ScaffoldingConsole {
             URL scriptUrl = this.getClass().getResource("/" + SCRIPT_GC);
             File scriptFile = new File(dirDomain, SCRIPT_GC);
             Files.copy(new File(scriptUrl.toURI()).toPath(), scriptFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            Console.writeln(String.format(FILE_CREATED, scriptFile.toString()));
+            this.console.writeln(String.format(FILE_CREATED, scriptFile.toString()));
 
             // create tamplates
             File dirTemplates = new File(dir, TEMPLATES_DIR);
@@ -110,8 +119,8 @@ public class ScaffoldingConsole {
             File templateEnumFile = new File(dirTemplates, TEMPLATE_ENUM_VM);
             Files.copy(new File(templateClassUrl.toURI()).toPath(), templateClassFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             Files.copy(new File(templateEnumUrl.toURI()).toPath(), templateEnumFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            Console.writeln(String.format(FILE_CREATED, templateClassFile.toString()));
-            Console.writeln(String.format(FILE_CREATED, templateEnumFile.toString()));
+            this.console.writeln(String.format(FILE_CREATED, templateClassFile.toString()));
+            this.console.writeln(String.format(FILE_CREATED, templateEnumFile.toString()));
 
             return false;
         }
@@ -123,7 +132,7 @@ public class ScaffoldingConsole {
         }
     }
 
-    public void run() throws RuntimeException {
+    private void run() throws RuntimeException {
         if (project.getProjectName() == null) {
             throw new RuntimeException("Parameter projectName doesn't defined!");
         }
@@ -148,9 +157,9 @@ public class ScaffoldingConsole {
             throw new RuntimeException(String.format("Output directory %s not found!", project.getOutputDir()));
         }
 
-        String scp = Console.read(Const.WHAT_SCRIPT).get();
-        String tmp = Console.read(Const.WHAT_TEMPLATE).get();
-        genInitialStructure = Console.read(Const.INITIAL_STRUCTURE).map(it -> it.equals("1")).get();
+        String scp = this.console.read(Const.WHAT_SCRIPT).get();
+        String tmp = this.console.read(Const.WHAT_TEMPLATE).get();
+        genInitialStructure = this.console.read(Const.INITIAL_STRUCTURE).map(it -> it.equals("1")).get();
 
         File[] filteredFiles = new File(project.getConfigDir(), SCRIPTS_FOLDER).listFiles((dir2, name) -> name.endsWith(SCRIPT_EXT));
         if (filteredFiles == null) filteredFiles = new File[]{};
@@ -187,7 +196,7 @@ public class ScaffoldingConsole {
 
         processScript(filteredFiles, filteredTemplates);
 
-        Console.writeln("Process conclude with success!");
+        this.console.writeln("Process conclude with success!");
 
     }
 
@@ -208,7 +217,7 @@ public class ScaffoldingConsole {
             template.setCreateIf(scftemplate.getCreateIf());
             template.setStartEvent((templ, domain, file) -> {
                 if (file.exists()) {
-                    return Console.read(Const.OVERRIDE_FILE.format(file.toPath().getFileName().toString()))
+                    return this.console.read(Const.OVERRIDE_FILE.format(file.toPath().getFileName().toString()))
                             .map(it -> it.equals("1"))
                             .get();
                 }
@@ -216,7 +225,7 @@ public class ScaffoldingConsole {
             });
 
             template.setEndEvent((templ, domain, file) -> {
-                Console.writeln(file.toPath().getFileName()+" generated with success!");
+                this.console.writeln(file.toPath().getFileName()+" generated with success!");
                 return true;
             });
 
@@ -247,7 +256,7 @@ public class ScaffoldingConsole {
         }
     }
 
-    public void walk(List<Template> templatesParse, File root) {
+    private void walk(List<Template> templatesParse, File root) {
         File[] list = root.listFiles();
 
         if (list == null) return;
