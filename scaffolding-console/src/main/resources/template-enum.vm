@@ -1,0 +1,25 @@
+package ${context.basePackage}.enums;
+
+public enum $domain.name implements AbstractEnum {
+
+#foreach( $attribute in $domain.attributes )
+    ${attribute.name}(${attribute.getParam('id')}, "${attribute.getParam('description')}")$attribute.ifLast(';',',')
+#end
+
+    private int id;
+    private String description;
+
+    ${domain.name}(int id, String description) {
+        this.id = id;
+        this.description = description;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+}

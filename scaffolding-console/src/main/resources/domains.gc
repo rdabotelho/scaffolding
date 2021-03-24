@@ -1,0 +1,19 @@
+class User (label: 'User') {
+    Long id;
+    String name (label:'Name');
+    String login (label:'Login');
+    String password (label:'Password', type: 'password');
+    RoleEnum role;
+    List<Group> groups (label:'Groups', manyToMany: 'true');
+}
+
+class Group (label: 'Group') {
+    Long id;
+    String name (label: 'Name');
+    String description (label: 'Description');
+}
+
+enum RoleEnum (fileName: 'Role.java') {
+    ADMIN (id: '1', description: 'Administrator');
+    USER (id: '2', description: 'User');
+}

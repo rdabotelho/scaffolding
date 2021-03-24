@@ -1,0 +1,26 @@
+package ${context.basePackage}.model;
+
+import java.util.*;
+#foreach( $attribute in $domain.attributes )
+#if( $attribute.isEnum() )
+import ${context.basePackage}.enums.${attribute.type};
+#end
+#end
+
+public class $domain.name extends AbstractModel {
+
+#foreach( $attribute in $domain.attributes )
+    private $attribute.type $attribute.name;
+#end
+
+#foreach( $attribute in $domain.attributes )
+    public $attribute.type get${attribute.name.toPascalCase()}() {
+        return $attribute.name;
+    }
+
+    public void set${attribute.name.toPascalCase()}($attribute.type $attribute.name) {
+        this.$attribute.name = $attribute.name;
+    }
+
+#end
+}
