@@ -3,7 +3,7 @@ package com.m2r.scaffolding.console;
 public class Const {
 
     public static Prompt SETUP = Prompt.builder()
-            .title("File codegen.yml not found in resources folder. Do you want create it?")
+            .title("File codegen.yml not found in the project. Do you want create it?")
             .option("yes")
             .option("no")
             .defaultValue("no")
