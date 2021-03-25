@@ -17,7 +17,7 @@ Configure repository and dependency in your maven pom file.
 <dependency>
     <groupId>com.m2r</groupId>
     <artifactId>scaffolding-console</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 

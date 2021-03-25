@@ -24,7 +24,7 @@ Configure repository and plugin in your maven pom file.
             <plugin>
                 <groupId>com.m2r</groupId>
                 <artifactId>scaffolding-maven</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>
