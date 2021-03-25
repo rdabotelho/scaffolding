@@ -8,8 +8,8 @@ Configure repository and dependency in your maven pom file.
 
 ```
 <repository>
-    <id>scaffolding</id>
-    <url>https://raw.github.com/rdabotelho/mvn-repo/scaffolding/</url>
+    <id>scaffolding-console</id>
+    <url>https://raw.github.com/rdabotelho/mvn-repo/scaffolding-console/</url>
 </repository>
 ```
 

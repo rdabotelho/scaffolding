@@ -7,7 +7,7 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<groupId>com.m2r</groupId>
+	<groupId>com.m2r.scaffolding</groupId>
 	<artifactId>scaffolding-maven</artifactId>
 	<version>1.0.0</version>
 	<packaging>maven-plugin</packaging>
@@ -27,9 +27,9 @@
 			<version>4.8.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.m2r</groupId>
+			<groupId>com.m2r.scaffolding</groupId>
 			<artifactId>scaffolding-console</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -62,7 +62,43 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<altDeploymentRepository>internal.repo::default::file://${project.build.directory}/scaffolding-maven</altDeploymentRepository>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.12</version>
+				<configuration>
+					<message>Maven artifacts for ${project.version}</message>
+					<noJekyll>true</noJekyll>
+					<outputDirectory>${project.build.directory}/scaffolding-maven</outputDirectory>
+					<branch>refs/heads/scaffolding-maven</branch>
+					<includes><include>**/*</include></includes>
+					<repositoryName>mvn-repo</repositoryName>
+					<repositoryOwner>rdabotelho</repositoryOwner>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>scaffolding-console</id>
+			<url>https://raw.github.com/rdabotelho/mvn-repo/scaffolding-console/</url>
+		</repository>
+	</repositories>
 
 </project>
