@@ -28,8 +28,8 @@ public class ScaffoldingConsole {
     private static final String TEMPLATE_ENUM_VM = "template-enum.vm";
     private static final String CODEGEN_DIR = "scaffolding";
     private static final String SCRIPTS_DIR = "scripts";
-    private static final String BASE_MODEL_DIR = "base/example/model";
-    private static final String BASE_ENUMS_DIR = "base/example/enums";
+    private static final String BASE_MODEL_DIR = "base/model";
+    private static final String BASE_ENUMS_DIR = "base/enums";
     private static final String TEMPLATES_DIR = "templates";
     public static final String FILE_CREATED = "File %s created!";
     public static final String CODEGEN_CONFIG_DIR = "/${user.dir}/" + CODEGEN_DIR;

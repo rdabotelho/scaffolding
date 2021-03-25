@@ -56,8 +56,8 @@ Once answered, the initial scaffolding structure will be created in the `/scaffo
 
 ```
 File ~/myproject/scaffolding/codegen.yml created!
-File ~/myproject/scaffolding/base/example/model/AbstractModel.java created!
-File ~/myproject/scaffolding/base/example/enums/AbstractEnum.java created!
+File ~/myproject/scaffolding/base/model/AbstractModel.java created!
+File ~/myproject/scaffolding/base/enums/AbstractEnum.java created!
 File ~/myproject/scaffolding/scripts/domains.gc created!
 File ~/myproject/scaffolding/templates/template-class.vm created!
 File ~/myproject/scaffolding/templates/template-enum.vm created!
@@ -83,8 +83,8 @@ Scaffolding folder structure
 
 In the first run, some sample files will be created inside the `base`, `scripts` and `templates` folders. Feel free to modify them.
 
-- `scaffolding/base/examples/enums/AbstractEnum.java`: Sample of abstract java enum.
-- `scaffolding/base/examples/model/AbstractModel.java`: Sample of abstract java class.
+- `scaffolding/base/enums/AbstractEnum.java`: Sample of abstract java enum.
+- `scaffolding/base/model/AbstractModel.java`: Sample of abstract java class.
 - `scaffolding/script/domains.gc`: Sample script with the definition of the domains (classes, enums and relationships).
 - `scaffolding/templates/template-class.vm`: Velocity sample template to generate java class.
 - `scaffolding/templates/template-enum.vm`: Velocity sample template to generate java enum.
@@ -96,18 +96,18 @@ This is the [Codegen](https://github.com/rdabotelho/codegen) configuration file.
 
 ```
 projectName: example
-basePackage: com.m2r.scaffolding.example
+basePackage: com.m2r.example
 configDir: /${user.dir}/scaffolding
-outputDir: /${user.dir}/src/main/java/com/m2r/scaffolding
+outputDir: /${user.dir}/src/main/java/com/m2r/example
 templates:
 - name: Model
   scope: class
   fileName: template-class.vm
-  outputFileName: example/model/${domain.name}.java
+  outputFileName: model/${domain.name}.java
 - name: Enum
   scope: enum
   fileName: template-enum.vm
-  outputFileName: example/enums/${domain.name}.java
+  outputFileName: enums/${domain.name}.java
 ```
 
 - `projectName`: Project name.
