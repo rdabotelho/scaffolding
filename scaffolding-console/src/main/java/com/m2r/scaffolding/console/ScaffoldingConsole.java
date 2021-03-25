@@ -12,7 +12,6 @@ import com.m2r.scaffolding.console.dto.ScaffoldingTemplate;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class ScaffoldingConsole {
     private static final String TEMPLATES_DIR = "templates";
     public static final String FILE_CREATED = "File %s created!";
     public static final String CODEGEN_CONFIG_DIR = "/${user.dir}/" + CODEGEN_DIR;
-    public static final String GENCODE_OUTPUT_DIR = "/${user.dir}/src/main/java/com/m2r/scaffolding";
+    public static final String GENCODE_OUTPUT_DIR = "/${user.dir}/src/main/java/";
     private static String BASE_FOLDER = "base";
     private static String SCRIPTS_FOLDER = "scripts";
     private static String TEMPLATES_FOLDER = "templates";
@@ -72,18 +71,19 @@ public class ScaffoldingConsole {
             if (!dir.exists()) dir.mkdirs();
             FileWriter writer = new FileWriter(file);
             writer.write(String.format("projectName: %s\n", this.console.read(Const.PROJECT_NAME).get()));
-            writer.write(String.format("basePackage: %s\n", this.console.read(Const.BASE_PACKAGE).get()));
+            String packg = this.console.read(Const.BASE_PACKAGE).get();
+            writer.write(String.format("basePackage: %s\n", packg));
             writer.write(String.format("configDir: %s\n", CODEGEN_CONFIG_DIR));
-            writer.write(String.format("outputDir: %s\n", GENCODE_OUTPUT_DIR));
+            writer.write(String.format("outputDir: %s\n", GENCODE_OUTPUT_DIR + packg.replaceAll("\\.", "/")));
             writer.write("templates:\n");
             writer.write("- name: Model\n");
             writer.write("  scope: class\n");
             writer.write("  fileName: template-class.vm\n");
-            writer.write("  outputFileName: example/model/${domain.name}.java\n");
+            writer.write("  outputFileName: model/${domain.name}.java\n");
             writer.write("- name: Enum\n");
             writer.write("  scope: enum\n");
             writer.write("  fileName: template-enum.vm\n");
-            writer.write("  outputFileName: example/enums/${domain.name}.java\n");
+            writer.write("  outputFileName: enums/${domain.name}.java\n");
             writer.close();
             this.console.writeln(String.format(FILE_CREATED, file.toString()));
 
@@ -153,10 +153,6 @@ public class ScaffoldingConsole {
 
         if (new File(project.getConfigDir()).exists() == false) {
             throw new RuntimeException(String.format("Config directory %s not found!", project.getConfigDir()));
-        }
-
-        if (new File(project.getOutputDir()).exists() == false) {
-            throw new RuntimeException(String.format("Output directory %s not found!", project.getOutputDir()));
         }
 
         String scp = this.console.read(Const.WHAT_SCRIPT).get();
