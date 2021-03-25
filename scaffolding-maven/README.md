@@ -7,10 +7,12 @@ Maven plugin to use the [scaffolding-console](../scaffolding-console/README.md) 
 Configure repository and plugin in your maven pom file.
 
 ```
-<repository>
-    <id>scaffolding-maven</id>
-    <url>https://raw.github.com/rdabotelho/mvn-repo/scaffolding-maven/</url>
-</repository>
+<pluginRepositories>
+    <pluginRepository>
+        <id>scaffolding-maven</id>
+        <url>https://raw.github.com/rdabotelho/mvn-repo/scaffolding-maven/</url>
+    </pluginRepository>
+</pluginRepositories>
 ```
 
 ```
