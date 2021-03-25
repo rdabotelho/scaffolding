@@ -7,15 +7,17 @@ Console to execute the scaffolding generation based on [Codegen](https://github.
 Configure repository and dependency in your maven pom file.
 
 ```
-<repository>
-    <id>scaffolding-console</id>
-    <url>https://raw.github.com/rdabotelho/mvn-repo/scaffolding-console/</url>
-</repository>
+<repositories>
+    <repository>
+        <id>scaffolding-console</id>
+        <url>https://raw.github.com/rdabotelho/mvn-repo/scaffolding-console/</url>
+    </repository>
+</repositories>
 ```
 
 ```
 <dependency>
-    <groupId>com.m2r</groupId>
+    <groupId>com.m2r.scaffolding</groupId>
     <artifactId>scaffolding-console</artifactId>
     <version>1.0.0</version>
 </dependency>
