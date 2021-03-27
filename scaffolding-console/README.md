@@ -39,10 +39,19 @@ public static void main(String[] args) throws Exception {
 When the generation console run the first time, it will ask you if you want to create the scaffolding configuration folder. You answer yes to create an initial setup with multiples samples files.
 
 ```
-File codegen.yml not found in the project. Do you want create it?
+Scaffolding configuration folder not found in the project. Do you want create it?
 1: yes
 2: no
 Enter your choice yes
+```
+
+You will be asked for the type of archetype.
+
+```
+Which artifact do you want to use?
+1: ms-spring-boot
+2: quickstart
+Enter your choice
 ```
 
 You will be asked for the name and the base package of the project.
@@ -55,12 +64,7 @@ What is the base package? com.m2r.scaffolding.example
 Once answered, the initial scaffolding structure will be created in the `/scaffolding` folder.
 
 ```
-File ~/myproject/scaffolding/codegen.yml created!
-File ~/myproject/scaffolding/base/model/AbstractModel.java created!
-File ~/myproject/scaffolding/base/enums/AbstractEnum.java created!
-File ~/myproject/scaffolding/scripts/domains.gc created!
-File ~/myproject/scaffolding/templates/template-class.vm created!
-File ~/myproject/scaffolding/templates/template-enum.vm created!
+The quickstart archetype was created with success!
 bye!
 
 Process finished with exit code 0

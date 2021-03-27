@@ -3,10 +3,15 @@ package com.m2r.scaffolding.console;
 public class Const {
 
     public static Prompt SETUP = Prompt.builder()
-            .title("File codegen.yml not found in the project. Do you want create it?")
+            .title("Scaffolding configuration folder not found in the project. Do you want create it?")
             .option("yes")
             .option("no")
             .defaultValue("no")
+            .build();
+
+    public static Prompt ARCHETYPE = Prompt.builder()
+            .title("Which artifact do you want to use?")
+            .required(true)
             .build();
 
     public static Prompt PROJECT_NAME = Prompt.builder()

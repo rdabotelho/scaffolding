@@ -6,6 +6,7 @@ import com.m2r.codegen.Codegen;
 import com.m2r.codegen.parser.Domain;
 import com.m2r.codegen.parser.StringWrapper;
 import com.m2r.codegen.parser.Template;
+import com.m2r.scaffolding.console.archetype.ArchetypeRepo;
 import com.m2r.scaffolding.console.dto.ScaffoldingProject;
 import com.m2r.scaffolding.console.dto.ScaffoldingTemplate;
 
@@ -16,22 +17,15 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ScaffoldingConsole {
 
     private static final String SCRIPT_EXT = ".gc";
     private static final String CODEGEN_YML = "codegen.yml";
-    private static final String SCRIPT_GC = "domains.gc";
-    private static final String BASE_MODEL = "AbstractModel.java";
-    private static final String BASE_ENUM = "AbstractEnum.java";
-    private static final String TEMPLATE_CLASS_VM = "template-class.vm";
-    private static final String TEMPLATE_ENUM_VM = "template-enum.vm";
     private static final String CODEGEN_DIR = "scaffolding";
-    private static final String SCRIPTS_DIR = "scripts";
-    private static final String BASE_MODEL_DIR = "base/model";
-    private static final String BASE_ENUMS_DIR = "base/enums";
-    private static final String TEMPLATES_DIR = "templates";
     public static final String FILE_CREATED = "File %s created!";
+    public static final String ARCHETYPE_CREATED = "The %s archetype was created with success!";
     public static final String CODEGEN_CONFIG_DIR = "/${user.dir}/" + CODEGEN_DIR;
     public static final String GENCODE_OUTPUT_DIR = "/${user.dir}/src/main/java/";
     private static String BASE_FOLDER = "base";
@@ -67,63 +61,34 @@ public class ScaffoldingConsole {
                 return false;
             }
 
-            // create gencode.yml
-            if (!dir.exists()) dir.mkdirs();
-            FileWriter writer = new FileWriter(file);
-            writer.write(String.format("projectName: %s\n", this.console.read(Const.PROJECT_NAME).get()));
-            String packg = this.console.read(Const.BASE_PACKAGE).get();
-            writer.write(String.format("basePackage: %s\n", packg));
-            writer.write(String.format("configDir: %s\n", CODEGEN_CONFIG_DIR));
-            writer.write(String.format("outputDir: %s\n", GENCODE_OUTPUT_DIR + packg.replaceAll("\\.", "/")));
-            writer.write("templates:\n");
-            writer.write("- name: Model\n");
-            writer.write("  scope: class\n");
-            writer.write("  fileName: template-class.vm\n");
-            writer.write("  outputFileName: model/${domain.name}.java\n");
-            writer.write("- name: Enum\n");
-            writer.write("  scope: enum\n");
-            writer.write("  fileName: template-enum.vm\n");
-            writer.write("  outputFileName: enums/${domain.name}.java\n");
-            writer.close();
-            this.console.writeln(String.format(FILE_CREATED, file.toString()));
+            // create initial gencode structure
+            List<String> branches = ArchetypeRepo.getBranches();
+            if (branches.isEmpty()) {
+                throw new RuntimeException("It was not possible to fetch the architypes list, check your connection.");
+            }
+            Prompt arcPrompt = Const.ARCHETYPE;
+            arcPrompt.getOptions().clear();
+            branches.removeIf(it -> it.equals("refs/heads/master"));
+            for (String archetype : branches) {
+                arcPrompt.getOptions().add(ArchetypeRepo.extractBranchName(archetype));
+            }
+            int arcResult = this.console.read(arcPrompt).map(it -> Integer.parseInt(it)).get() - 1;
+            String branch = branches.get(arcResult);
+            File scaffoldingDir = new File(baseDir, CODEGEN_DIR);
+            ArchetypeRepo.cloneBranch(branch, scaffoldingDir);
 
-            // create base model
-            File dirBaseModel = new File(dir, BASE_MODEL_DIR);
-            if (!dirBaseModel.exists()) dirBaseModel.mkdirs();
+            // change de project name, basePackage, configDir and outputDir
+            String projectName = this.console.read(Const.PROJECT_NAME).get();
+            String basePackage = this.console.read(Const.BASE_PACKAGE).get();
 
-            InputStream baseModelIn = this.getClass().getResourceAsStream("/" + BASE_MODEL);
-            File baseModelFile = new File(dirBaseModel, BASE_MODEL);
-            Files.copy(baseModelIn, baseModelFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            this.console.writeln(String.format(FILE_CREATED, baseModelFile.toString()));
+            File codegenFile = new File(scaffoldingDir, CODEGEN_YML);
+            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            project = mapper.readValue(codegenFile, ScaffoldingProject.class);
+            project.setProjectName(projectName);
+            project.setBasePackage(basePackage);
+            mapper.writeValue(codegenFile, project);
 
-            // create base enum
-            File dirBaseEnum = new File(dir, BASE_ENUMS_DIR);
-            if (!dirBaseEnum.exists()) dirBaseEnum.mkdirs();
-            InputStream baseEnumIn = this.getClass().getResourceAsStream("/" + BASE_ENUM);
-            File baseEnumFile = new File(dirBaseEnum, BASE_ENUM);
-            Files.copy(baseEnumIn, baseEnumFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            this.console.writeln(String.format(FILE_CREATED, baseEnumFile.toString()));
-            
-            // create domains.gc
-            File dirDomain = new File(dir, SCRIPTS_DIR);
-            if (!dirDomain.exists()) dirDomain.mkdirs();
-            InputStream scriptIn = this.getClass().getResourceAsStream("/" + SCRIPT_GC);
-            File scriptFile = new File(dirDomain, SCRIPT_GC);
-            Files.copy(scriptIn, scriptFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            this.console.writeln(String.format(FILE_CREATED, scriptFile.toString()));
-
-            // create tamplates
-            File dirTemplates = new File(dir, TEMPLATES_DIR);
-            if (!dirTemplates.exists()) dirTemplates.mkdirs();
-            InputStream templateClassIn = this.getClass().getResourceAsStream("/" + TEMPLATE_CLASS_VM);
-            InputStream templateEnumIn = this.getClass().getResourceAsStream("/" + TEMPLATE_ENUM_VM);
-            File templateClassFile = new File(dirTemplates, TEMPLATE_CLASS_VM);
-            File templateEnumFile = new File(dirTemplates, TEMPLATE_ENUM_VM);
-            Files.copy(templateClassIn, templateClassFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(templateEnumIn, templateEnumFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            this.console.writeln(String.format(FILE_CREATED, templateClassFile.toString()));
-            this.console.writeln(String.format(FILE_CREATED, templateEnumFile.toString()));
-
+            this.console.writeln(String.format(ARCHETYPE_CREATED, ArchetypeRepo.extractBranchName(branch)));
             return false;
         }
         else {
@@ -142,13 +107,11 @@ public class ScaffoldingConsole {
         if (project.getConfigDir() == null) {
             throw new RuntimeException("Parameter configDir doesn't defined!");
         }
-        project.setConfigDir(project.getConfigDir().replace("/${user.dir}", System.getProperty("user.dir")));
         project.setConfigDir(project.getConfigDir().replace("${user.dir}", System.getProperty("user.dir")));
 
         if (project.getOutputDir() == null) {
             throw new RuntimeException("Parameter outputDir doesn't defined!");
         }
-        project.setOutputDir(project.getOutputDir().replace("/${user.dir}", System.getProperty("user.dir")));
         project.setOutputDir(project.getOutputDir().replace("${user.dir}", System.getProperty("user.dir")));
 
         if (new File(project.getConfigDir()).exists() == false) {

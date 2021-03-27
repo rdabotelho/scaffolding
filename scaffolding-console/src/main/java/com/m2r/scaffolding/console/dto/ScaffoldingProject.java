@@ -1,5 +1,7 @@
 package com.m2r.scaffolding.console.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.ArrayList;
 import java.util.List;
 
