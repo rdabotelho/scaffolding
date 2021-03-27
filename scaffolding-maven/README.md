@@ -133,13 +133,14 @@ Scaffolding configuration folder not found in the project. Do you want create it
 Enter your choice 1
 ```
 
-You will be asked for the type of archetype. Answer the number 1 (ms-spring-boot):
+You will be asked for the type of archetype. Answer the number 2 (ms-spring-boot):
 
 ```
 Which artifact do you want to use?
-1: ms-spring-boot
-2: quickstart
-Enter your choice 1
+1: mb-flutter
+2: ms-spring-boot
+3: quickstart
+Enter your choice 2
 ```
 
 You will be asked for the name and the base package of the project.
