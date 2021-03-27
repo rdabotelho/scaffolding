@@ -46,7 +46,7 @@ Configure repository and plugin in your maven pom file.
 </profiles>
 ```
 
-## Creating a new project with scaffolding archetype
+## Creating an example project with scaffolding archetype
 
 Create a new directory
 
