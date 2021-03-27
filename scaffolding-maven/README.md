@@ -46,10 +46,16 @@ Configure repository and plugin in your maven pom file.
 </profiles>
 ```
 
-Use the maven command to call the console:
+To call the console inside a maven project, use the command:
 
 ```
 mvn compile -Pscaffolding
+```
+
+To call the console outside a maven project, use the command:
+
+```
+mvn com.m2r.scaffolding:scaffolding-maven:1.0.0:site
 ```
 
 Then just follow the [scaffolding-console](../scaffolding-console/README.md) instructions.
