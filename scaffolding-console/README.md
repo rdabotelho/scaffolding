@@ -89,7 +89,7 @@ In the first run, some sample files will be created inside the `base`, `scripts`
 
 - `scaffolding/base/enums/AbstractEnum.java`: Sample of abstract java enum.
 - `scaffolding/base/model/AbstractModel.java`: Sample of abstract java class.
-- `scaffolding/script/domains.gc`: Sample script with the definition of the domains (classes, enums and relationships).
+- `scaffolding/scripts/domains.gc`: Sample script with the definition of the domains (classes, enums and relationships).
 - `scaffolding/templates/template-class.vm`: Velocity sample template to generate java class.
 - `scaffolding/templates/template-enum.vm`: Velocity sample template to generate java enum.
 - `scaffolding/codegen.yml`: Main gencode configuration file.
