@@ -139,7 +139,7 @@ You will be asked for the type of archetype. Answer the number 1 (ms-spring-boot
 Which artifact do you want to use?
 1: ms-spring-boot
 2: quickstart
-Enter your choice 2
+Enter your choice 1
 ```
 
 You will be asked for the name and the base package of the project.
